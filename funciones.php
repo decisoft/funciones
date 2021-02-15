@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Funciones HeyMillennial!
+Plugin Name: Funciones Estándar
 Plugin URI: https://twitter.com/myanesp
 Description: Plugin para liberar de funciones el fichero <code>functions.php</code>, con las principales funciones, como Google Fonts y personalización del logo. Versión estándar y base, a partir de esta puedes añadir y configurar todas las funciones dependiendo del sitio web al que las apliques.
 Version: 1.0
