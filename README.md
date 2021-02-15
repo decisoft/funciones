@@ -8,5 +8,6 @@ Por el momento, las que he necesitado para mis páginas webs. Añadir Google Fon
 
 # ¿Puedo contribuir?
 Por supuesto, este repositorio es para compartir conocimientos y utilidades para las páginas construidas sobre WordPress, para ampliar y mejorar las funcionalidades.
+
 ## ¿Qué puedo contribuir?
-El plugin tiene funciones, por ahora, de optimización de la carga (WPO), de seguridad, de funcionalidades y de privacidad. Pero siéntete libre a ampliar su capacidad.
+El plugin tiene funciones, por ahora, de optimización de la carga (WPO), de seguridad, de funcionalidades y de privacidad. Pero siéntete libre de ampliar su capacidad.
