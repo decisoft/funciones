@@ -223,3 +223,15 @@ $('html,body').animate({scrollTop:$(tabpanel).offset().top}, 750);
 
 /* Quitar precio de los resultados de Google */
 add_filter( 'woocommerce_structured_data_product_offer', '__return_empty_array' );
+
+/* Errores junto al campo con el error */
+add_filter( 'woocommerce_form_field', 'etiqueta_error_pago', 10, 4 );
+function etiqueta_error_pago( $field, $key, $args, $value ) {
+if ( strpos( $field, '</label>' ) !== false && $args['required'] ) {
+$error = '<span class="error" style="display:none">';
+$error .= sprintf( __( '%s es un campo obligatorio.', 'woocommerce' ), $args['label'] );
+$error .= '</span>';
+$field = substr_replace( $field, $error, strpos( $field, '</label>' ), 0);
+}
+return $field;
+}
