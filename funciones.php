@@ -345,3 +345,40 @@ function readonly_billing_account_fields ( $billing_fields ) {
     }
     return $billing_fields;
 }
+
+/* Shortcode para mostrar valoraciones de WooCommerce */
+//Aquí definimos el nombre del shortcode y la función que invoca
+add_shortcode( 'valoraciones_producto', 'shortcode_valoraciones' );
+ 
+function shortcode_valoraciones( $atts ) {
+    
+   if ( empty( $atts ) ) return '';
+ 
+   if ( ! isset( $atts['id'] ) ) return '';
+//Aquí definimos que hay que indicar el ID del producto del que queremos mostrar valoraciones       
+   $comments = get_comments( 'post_id=' . $atts['id'] );
+    
+   if ( ! $comments ) return '';
+//Generamos el HTML para mostrar las valoraciones al estilo Woo, con avatares, estrellitas y todo    
+   $html .= '<div class="woocommerce-tabs"><div id="reviews"><ol class="commentlist">';
+    
+   foreach ( $comments as $comment ) {   
+      $rating = intval( get_comment_meta( $comment->comment_ID, 'rating', true ) );
+      $html .= '<li class="review">';
+      $html .= get_avatar( $comment, '60' );
+      $html .= '<div class="comment-text">';
+      if ( $rating ) $html .= wc_get_rating_html( $rating );
+      $html .= '<p class="meta"><strong class="woocommerce-review__author">';
+      $html .= get_comment_author( $comment );
+      $html .= '</strong></p>';
+      $html .= '<div class="description">';
+      $html .= $comment->comment_content;
+      $html .= '</div></div>';
+      $html .= '</li>';
+   }
+    
+   $html .= '</ol></div></div>';
+    
+   return $html;
+}
+// [valoraciones_producto id=888]
