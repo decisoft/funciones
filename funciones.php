@@ -318,3 +318,15 @@ function archivo_emails_woo( $attachments, $email_id, $order, $email ) {
 'failed_order' // pedido fallido
 'new_order' // nuevo pedido
 */
+
+/* Descarga por defecto en todas las cuentas */
+add_filter( 'woocommerce_customer_get_downloadable_products', 'descarga_gratis', 9999, 1 );
+ 
+function descarga_gratis( $downloads ) {
+   $downloads[] = array(
+      'product_name' => 'Descripción de la descarga',
+      'download_name' => 'Etiqueta del botón',
+      'download_url' => 'https://web.es/archivo.pdf',
+   );
+   return $downloads;
+}
