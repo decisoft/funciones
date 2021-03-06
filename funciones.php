@@ -330,3 +330,18 @@ function descarga_gratis( $downloads ) {
    );
    return $downloads;
 }
+
+/* Campos solo lectura en editar cuenta */
+add_filter( 'woocommerce_billing_fields', 'readonly_billing_account_fields', 25, 1 );
+function readonly_billing_account_fields ( $billing_fields ) {
+    // Solo la dirección de facturación para usuarios conectados
+    if( is_user_logged_in() && is_account_page() ){
+
+        $readonly = ['readonly' => 'readonly'];
+
+        $billing_fields['billing_first_name']['custom_attributes'] = $readonly;
+        $billing_fields['billing_last_name']['custom_attributes'] = $readonly;
+        $billing_fields['billing_email']['custom_attributes'] = $readonly;
+    }
+    return $billing_fields;
+}
