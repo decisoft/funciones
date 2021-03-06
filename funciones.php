@@ -265,3 +265,32 @@ function ventacruzada_agradecimiento() {
 echo '<h2>¿Has visto ya estos otros productos?</h2>';
 echo do_shortcode( '[products ids="136,137,138"]' );
 }
+
+/* Parte 1 - Producto de WooCommerce */
+add_filter( 'woocommerce_get_price_html', 'descuento_clientes_producto', 9999, 2 );
+function descuento_clientes( $price_html, $product ) {
+    // SOLO EN LA TIENDA
+    if ( is_admin() ) return $price_html;
+    // SOLO SI NO HAY PRECIO
+    if ( '' === $product->get_price() ) return $price_html;
+    // SI EL CLIENTE ESTÁ CONECTADO APLICAR 20% DE DESCUENTO   
+    if ( wc_current_user_has_role( 'customer' ) ) {
+        $orig_price = wc_get_price_to_display( $product );
+        $price_html = wc_price( $orig_price * 0.80 );
+    }
+    return $price_html;
+}
+/* Parte 2 - Carrito y finalizar compra */
+add_action( 'woocommerce_before_calculate_totals', 'descuento_clientes_carrito', 9999 );
+function descuento_clientes_carrito( $cart ) {
+    if ( is_admin() && ! defined( 'DOING_AJAX' ) ) return;
+    if ( did_action( 'woocommerce_before_calculate_totals' ) >= 2 ) return;
+    // SI EL CLIENTE NO ESTA CONECTADO NO SE APLICA DESCUENTO
+    if ( ! wc_current_user_has_role( 'customer' ) ) return;
+    // LOOP POR PRODUCTOS DEL CARRITO Y APLICAR DESCUENTO 20%
+    foreach ( $cart->get_cart() as $cart_item_key => $cart_item ) {
+        $product = $cart_item['data'];
+        $price = $product->get_price();
+        $cart_item['data']->set_price( $price * 0.80 );
+    }
+}
