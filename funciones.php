@@ -235,3 +235,26 @@ $field = substr_replace( $field, $error, strpos( $field, '</label>' ), 0);
 }
 return $field;
 }
+
+/* Añadir descuento según volumen de compra */
+add_action( 'woocommerce_before_calculate_totals', 'precio_segun_cantidad', 9999 );
+function precio_segun_cantidad( $cart ) {
+if ( is_admin() && ! defined( 'DOING_AJAX' ) ) return;
+if ( did_action( 'woocommerce_before_calculate_totals' ) >= 2 ) return;
+
+// Define aquí las reglas de descuento y los umbrales
+$umbral1 = 11; // Cambiar precio si hay > 10 productos
+$descuento1 = 0.05; // Rebaja del 5% si hay > 10 productos
+$umbral2 = 21; // Cambiar precio si hay > 20 productos
+$descuento2 = 0.1; // Rebaja del 10% si hay > 20 productos
+
+foreach ( $cart->get_cart() as $cart_item_key => $cart_item ) {
+if ( $cart_item['quantity'] >= $umbral1 && $cart_item['quantity'] < $umbral2 ) {
+$price = round( $cart_item['data']->get_price() * ( 1 - $descuento1 ), 2 );
+$cart_item['data']->set_price( $price );
+} elseif ( $cart_item['quantity'] >= $umbral2 ) {
+$price = round( $cart_item['data']->get_price() * ( 1 - $descuento2 ), 2 );
+$cart_item['data']->set_price( $price );
+}
+}
+}
