@@ -294,3 +294,27 @@ function descuento_clientes_carrito( $cart ) {
         $cart_item['data']->set_price( $price * 0.80 );
     }
 }
+
+/* Añadir PDF a emails de nuevo pedido y procesando  */
+add_filter( 'woocommerce_email_attachments', 'archivo_emails_woo', 10, 4 );
+function archivo_emails_woo( $attachments, $email_id, $order, $email ) {
+    $email_ids = array( 'new_order', 'customer_processing_order' ); 
+    if ( in_array ( $email_id, $email_ids ) ) {
+        $upload_dir = wp_upload_dir();
+        $attachments[] = $upload_dir['basedir'] . "/2020/10/catalogo-ofertas.pdf"; // Change url path
+    }
+    return $attachments;
+} 
+
+// List of all variables of $email_ids
+/* // 'cancelled_order' // pedido cancelado
+'customer_processing_order' // pedido procesándose
+'customer_invoice' // factura del cliente
+'customer_new_account' // nueva cuenta de cliente
+'customer_note' // notas al cliente
+'customer_on_hold_order' // pedido en espera
+'customer_refunded_order' // reembolso
+'customer_reset_password' // restablecer contraseña
+'failed_order' // pedido fallido
+'new_order' // nuevo pedido
+*/
