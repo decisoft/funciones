@@ -382,3 +382,13 @@ function shortcode_valoraciones( $atts ) {
    return $html;
 }
 // [valoraciones_producto id=888]
+
+/* Distinto nombre a Mi cuenta si el usuario está desconectado */
+add_filter( 'wp_nav_menu_items', 'dynamic_label_change', 10, 2 ); 
+ 
+function dynamic_label_change( $items, $args ) { 
+   if ( ! is_user_logged_in() ) { 
+      $items = str_replace( "Mi cuenta", "Acceder/Registrarse", $items ); 
+   } 
+   return $items; 
+}
