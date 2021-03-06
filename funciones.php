@@ -133,3 +133,93 @@ echo '<div class="social-share">
 
 </div>';
 }}
+
+/* 
+ ***** WooCommerce *****
+*/
+
+/* Avisar a cliente conectado si ya compró productos */
+add_action( 'woocommerce_after_shop_loop_item', 'ya_comprado', 30 );
+function ya_comprado() {
+global $product;
+if ( ! is_user_logged_in() ) return;
+$current_user = wp_get_current_user();
+if ( wc_customer_bought_product( $current_user->user_email, $current_user->ID, $product->get_id() ) ) echo '<div class="user-bought">&hearts; ¡Hola ' . $current_user->first_name . ', esto ya lo compraste anteriormente! ¿Quieres comprarlo de nuevo?</div>';
+}
+
+/* Mensaje personalizado si el cliente selecciona Portugal */
+// Parte 1 - Creamos el mensaje y lo ponemos sobre la parte de facturación
+add_action( 'woocommerce_before_checkout_billing_form', 'mensaje_portugal' );
+
+function mensaje_portugal() {
+echo '<div class="shipping-notice woocommerce-info" style="display:none">Los pedidos a Portugal tardan de 3 a 5 días laborales a partir del pedido.</div>';
+}
+
+// Parte 2 - Mostramos u ocultamos el mensaje según el país
+add_action( 'woocommerce_after_checkout_form', 'mostrar_mensaje_portugal' );
+function mostrar_mensaje_portugal(){
+?>
+<script>
+jQuery(document).ready(function($){
+// Pon aquí el código de país para el que se mostrará el mensaje
+var countryCode = 'PT';
+$('select#billing_country').change(function(){
+selectedCountry = $('select#billing_country').val();
+if( selectedCountry == countryCode ){
+$('.shipping-notice').show();
+}
+else {
+$('.shipping-notice').hide();
+}
+});
+});
+</script>
+<?php
+}
+
+/* Enlazar a las pestañas de WooCommerce */
+add_action( 'woocommerce_single_product_summary', 'scroll_tabs_products', 21 );
+function scroll_tabs_products() {
+global $post, $product; 
+// ENLACE A LA PESTAÑA DE DESCRIPCIÓN
+if ( $post->post_content ) {
+echo '<p><a class="ir-a-la-tab" href="#tab-description">' . __( 'Ver más', 'woocommerce' ) . ' &rarr;</a></p>';
+}
+
+// ENLACE A LA PESTAÑA DE INFORMACIÓN ADICIONAL
+if ( $product && ( $product->has_attributes() || apply_filters( 'wc_product_enable_dimensions_display', $product->has_weight() || $product->has_dimensions() ) ) ) {
+echo '<p><a class="ir-a-la-tab" href="#tab-additional_information">' . __( 'Información adicional', 'woocommerce' ) . ' &rarr;</a></p>';
+}
+
+// ENLACE A LA PESTAÑA DE VALORACIONES
+if ( comments_open() ) {
+echo '<p><a class="ir-a-la-tab" href="#tab-reviews">' . __( 'Ver valoraciones', 'woocommerce' ) . ' &rarr;</a></p>';
+}
+
+// ENLACE A PESTAÑA PERSONALIZADA
+if ( $post->post_content ) { echo '<p><a class="ir-a-la-tab" href="#tab-personalizada">' . __( 'Instrucciones', 'woocommerce' ) . ' &rarr;</a></p>'; }
+?>
+<script>
+jQuery(document).ready(function($){
+$('a.ir-a-la-tab').click(function(e){
+e.preventDefault();
+var tabhash = $(this).attr("href");
+var tabli = 'li.' + tabhash.substring(1);
+var tabpanel = '.panel' + tabhash;
+$(".wc-tabs li").each(function() {
+if ( $(this).hasClass("active") ) {
+$(this).removeClass("active");
+}
+});
+$(tabli).addClass("active");
+$(".woocommerce-tabs .panel").css("display","none");
+$(tabpanel).css("display","block");
+$('html,body').animate({scrollTop:$(tabpanel).offset().top}, 750);
+});
+});
+</script>
+<?php
+}
+
+/* Quitar precio de los resultados de Google */
+add_filter( 'woocommerce_structured_data_product_offer', '__return_empty_array' );
