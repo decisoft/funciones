@@ -258,3 +258,10 @@ $cart_item['data']->set_price( $price );
 }
 }
 }
+
+/* Mostrar productos de venta cruzada en la pagina de agradecimiento */
+add_action( 'woocommerce_thankyou', 'ventacruzada_agradecimiento' );
+function ventacruzada_agradecimiento() {
+echo '<h2>¿Has visto ya estos otros productos?</h2>';
+echo do_shortcode( '[products ids="136,137,138"]' );
+}
