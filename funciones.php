@@ -444,3 +444,10 @@ wp_dequeue_script('jqueryui');
 }
 }
 }
+
+/* Añadir texto en la pagina de tienda */
+add_action( 'woocommerce_before_main_content', 'my_text', 20 );
+function my_text() {
+if( is_shop() ) {
+do_action( 'woocommerce_archive_description' );  }
+}
