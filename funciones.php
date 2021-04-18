@@ -22,7 +22,7 @@ header( "Content-Security-Policy default-src 'none'; script-src 'self'; connect-
 }
 add_action( 'send_headers', 'agregar_cabeceras_seguridad' );
 
-// Disable FLoC
+// Disable FLoC - https://paramdeo.com/blog/opting-your-website-out-of-googles-floc-network
 function disable_floc($headers) {
     $headers['Permissions-Policy'] = 'interest-cohort=()';
     return $headers;
