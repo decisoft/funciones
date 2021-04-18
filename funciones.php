@@ -22,6 +22,14 @@ header( "Content-Security-Policy default-src 'none'; script-src 'self'; connect-
 }
 add_action( 'send_headers', 'agregar_cabeceras_seguridad' );
 
+// Disable FLoC
+function disable_floc($headers) {
+    $headers['Permissions-Policy'] = 'interest-cohort=()';
+    return $headers;
+  }
+
+add_filter('wp_headers', 'disable_floc');
+
 /* Añadir Font Awesome // Add Font Awesome */
 add_action( 'wp_enqueue_scripts', 'custom_load_font_awesome' );
 /**
