@@ -61,6 +61,9 @@ function no_self_pings( &$links ) {
 
 add_action( 'pre_ping', 'no_self_pings' );
 
+/* Desactivar CSS de Jetpack */
+add_filter( 'jetpack_implode_frontend_css', '__return_false', 99 );
+
 /* Precarga de DNS externas  // Prefetch dns */
 function dns_prefetch() {
 echo '<meta http-equiv="x-dns-prefetch-control" content="on">
